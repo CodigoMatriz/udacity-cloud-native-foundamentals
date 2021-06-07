@@ -1,5 +1,5 @@
-> Cloud Native Fundamentals
-Udacity // Cloud Native Fundamentals Scholarship Program
+> Cloud Native Fundamentals  
+> Udacity // Cloud Native Fundamentals Scholarship Program
 
 [TOC]
 
@@ -62,3 +62,15 @@ Cloud-native tooling adoption has increased because of rapid delivery of value t
 - Automation: release a service without human intervention
 - Orchestration: introduce a container orchestrator to manage thousands of services with minimal effort
 - Observability: ability to independently troubleshoot and debug each component
+
+# Lesson 2: Architecture Consideration for Cloud Native Applications
+
+## Introduction
+
+Before starting to build an application we have to go through to a design phase to identify the main requirements and architecture with the availability of resources; **Monolith** or **Microservices**.
+
+<div align="center">
+	<img src="./assets/architecture_consideration.png" width="700" />
+</div>
+
+## Design Considerations for Cloud-Native Applications
