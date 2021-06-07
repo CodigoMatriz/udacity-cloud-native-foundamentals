@@ -138,7 +138,8 @@ Consisting of:
 
 ### Additional Resources
 
-**[What’s the Difference Between Monolith and Microservices?](https://nordicapis.com/whats-the-difference-between-monolith-and-microservices/)**
+**[What’s the Difference Between Monolith and Microservices?](https://nordicapis.com/whats-the-difference-between-monolith-and-microservices/)**  
 **[Microservices vs Monolithic Architecture](https://www.mulesoft.com/resources/api/microservices-vs-monolithic)**
 
 ## Trade-offs for Monoliths and Microservices
+
