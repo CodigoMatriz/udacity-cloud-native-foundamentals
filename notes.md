@@ -63,7 +63,7 @@ Cloud-native tooling adoption has increased because of rapid delivery of value t
 - Orchestration: introduce a container orchestrator to manage thousands of services with minimal effort
 - Observability: ability to independently troubleshoot and debug each component
 
-# Lesson 2: Architecture Consideration for Cloud Native Applications
+# Lesson 2: Architecture Consideration for Cloud-Native Applications
 
 ## Introduction
 
@@ -74,3 +74,71 @@ Before starting to build an application we have to go through to a design phase 
 </div>
 
 ## Design Considerations for Cloud-Native Applications
+
+**Design Considerations**
+
+_Functional Requirements_
+What capabilities should the application deliver to end-users. 
+Good starting point is to expand on the following:
+- Stakeholders
+- Functionalities
+- End Users
+- Input and Ouput Process
+- Engineering Teams
+
+_Available Resources_
+Go over what can be used in facilitating the implementation.
+Good starting point is to list available:
+- Engineering Resources
+- Financial Resources
+- Timeframes
+- Internal Knowledge
+
+## Monoliths and Microservices
+
+Regardless of of the adopted structure, the goal is to design an application that delivers value to the customer and is agile.
+
+At the same time either architecture encapsulates the three main tiers:
+- UI (User Interface): handle HTTP requests from the users and returns a response
+- Business Logic: contained code that provides a service to the users
+- Data Layer: implement access and storage of data objects
+
+### Monolith
+
+An application design where all application tiers are managed as a single unit.
+
+Consisting of:
+- Same unit
+- Business Logic
+	- Managed by a single repository
+	- Sharing existing resources (e.g. CPU and Memory)
+	- Developed in one programming language
+- Released using a single binary
+
+<div align="center">
+	<img src="./assets/monolith.png" max-width="700" />
+</div>
+
+### Microservice
+
+An application design where application tiers are managed as independent, smaller units.
+
+Consisting of:
+
+- Small and Independent Units
+- Separate Service
+  - Own allocated resources (e.g. CPU and Memory)
+  - Well-defined API (Application Programming Interface)
+  - Programming language agnostic
+  - Released using its own binary
+
+<div align="center">
+	<img src="./assets/microservices.png" max-width="700" />
+</div>
+
+### Additional Resources
+
+**[What’s the Difference Between Monolith and Microservices?](https://nordicapis.com/whats-the-difference-between-monolith-and-microservices/)**
+**[Microservices vs Monolithic Architecture](https://www.mulesoft.com/resources/api/microservices-vs-monolithic)**
+
+## Trade-offs for Monoliths and Microservices
