@@ -309,3 +309,146 @@ Where we once had multiple VMs on a hypervisor, it's now replaced by multiple co
 
 ## Docker for Application Packaging
 
+There are plenty of tools to containerize services, but Docker has set the industry standard for many years. To containerize an application with Docker, there are three main components: **Dockerfiles**, **Docker Image**, **Docker Registries**
+
+### Dockerfile
+
+Set of instructions used to create the Docker image, instructing dependencies to install, code to compile or impersonate a user. The Docker image being composed of multiple layers as instructions in the Dockerfile, with all layers being cached and only updating a layer at build if the instruction is modified.
+
+Use pre-defined instructions when constructing a Dockerfile such as:
+
+```Dockerfile
+FROM   # Sets the base image
+RUN    # Command to execute
+COPY   # Copy files from host to container
+CMD    # Set default command to execute at container start
+EXPOSE # Expose an application port
+```
+
+_SAMPLE_
+
+```Dockerfile
+FROM python:3.8
+LABEL maintainer="CodigoMatriz"
+
+COPY . /app
+WORKDIR /app
+RUN pip install -r requirements.txt
+
+CMD [ "python", "app.py" ]
+```
+
+### Docker Image
+
+With our Dockerfile constructed, we use these instructions to build a **Docker Image**, which is a read-only template that enables creating a runnable instance of an application.
+
+_SYNTAX_
+
+```sh
+# build an image
+# OPTIONS - optional;  define extra configuration
+# PATH - required;  sets the location of the Dockefile and  any referenced files 
+docker build [OPTIONS] PATH
+
+# Where OPTIONS can be:
+-t, --tag - set the name and tag of the image
+-f, --file - set the name of the Dockerfile
+--build-arg - set build-time variables
+
+# Find all valid options for this command 
+docker build --help
+```
+
+_SAMPLE_
+
+```sh
+# build an image using the Dockerfile from the current directory
+docker build -t python-helloworld .
+
+# build an image using the Dockerfile from the `lesson1/python-app` directory
+docker build -t python-helloworld lesson1/python-app
+```
+
+Once our Docker Image is built, it is best practice to test it locally by creating a container using `docker run`.
+
+__SYNTAX__
+
+```sh
+# execute an image
+# OPTIONS - optional;  define extra configuration
+# IMAGE -  required; provides the name of the image to be executed
+# COMMAND and ARGS - optional; instruct the container to run specific commands when it starts 
+docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+# Where OPTIONS can be:
+-d, --detach - run in the background 
+-p, --publish - expose container port to host
+-it - start an interactive shell
+
+# Find all valid options for this command 
+docker run --help
+```
+
+Create a container for the Python "hello-world" application, which will run in detached mode (background) and expose it to port `5111` on the host.
+
+```sh
+docker run -d -p 5111:5000 python-helloworld
+```
+
+You can retrieve the container logs by running `docker logs {{ CONTAINER_ID }}`.
+
+### Docker Registry
+
+Once your image has been tested and is working as intended, it is time to push it  to a registry (public or private) like Dockerhub, AWS ECR, and so forth.
+
+Do remember to tag your image, using `docker tag`, before pushing it, using `docker push`, to the registry as it provides version control and human-redable than the ID allocated by Docker.
+
+_SYNTAX_
+
+```sh
+# tag an image
+# SOURCE_IMAGE[:TAG]  - required and the tag is optional; define the name of an image on the current machine 
+# TARGET_IMAGE[:TAG] -  required and the tag is optional; define the repository, name, and version of an image
+docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+```
+
+```sh
+# push an image to a registry 
+# NAME[:TAG] - required and the tag is optional; name, set the image name to be pushed to the registry
+docker push NAME[:TAG]
+```
+
+Tag and Push
+
+```sh
+# tag the `python-helloworld` image, to be pushed 
+# in the `pixelpotato` repository, with the `python-helloworld` image name
+# and version `v1.0.0`
+docker tag python-helloworld pixelpotato/python-helloworld:v1.0.0
+
+# push the `python-helloworld` application in version v1.0.0 
+# to the `pixelpotato` repository in DockerHub
+docker push pixelpotato/python-helloworld:v1.0.0
+```
+
+### Additional Resources
+
+Explore Dockerfiles best practices and valid list of instructions:
+
+-   [Dockerfile reference](https://docs.docker.com/engine/reference/builder/#from) 
+-   [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+
+Explore how to build and run a Docker image, with a list of all available options:
+
+-   [Docker Build command](https://docs.docker.com/engine/reference/commandline/build/)
+-   [Docker Run command](https://docs.docker.com/engine/reference/commandline/run/)
+
+Explore Docker registries, alternatives to package an application, and OCI standards:
+
+-   [Introduction to Docker registry](https://docs.docker.com/registry/introduction/) 
+-   [Docker Tag command](https://docs.docker.com/engine/reference/commandline/tag/)
+-   [Docker Push command](https://docs.docker.com/engine/reference/commandline/push/)
+-   [Demystifying the Open Container Initiative (OCI) Specifications](https://www.docker.com/blog/demystifying-open-container-initiative-oci-specifications/)
+-   [Buildpacks: An App’s Brief Journey from Source to Image](https://buildpacks.io/docs/app-journey/)
+
+## Deploy Your First Kubernetes Cluster
