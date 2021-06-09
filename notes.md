@@ -281,3 +281,31 @@ When considering adding new functionalities or incorporating new tools, it is al
 
 **[Modern Banking in 1500 Microservices](https://www.youtube.com/watch?v=t7iVCIYQbgk)**  
 Watch how Monzo is managing thousands of microservices and evolves their ecosystem
+
+
+# Lesson 3: Container Orchestration with Kubernetes
+
+## Transitions from VMs to Containers
+
+<div align="center">
+	<img src="./assets/vms_containers.png" max-width="700" />
+</div>
+
+### VMs
+
+Virtual Machines (VMs) were the main mechanism to host an application, as it encapsulated the code, config files and dependencies necessary to execute the application.
+
+A VM is composed of an **operating sysmtem** (OS) with pre-installed libraries and packages that an application will utilize along with the OS filesystem.
+
+VMs would be managed through a **hypervisor**, a software layer that provides virtualization of the infrastructure based on physical servers. Allowing the capability of creating, configuring and managing multiple VMs.
+
+VMs introduced standardization in infrastructure provisioning. Instead of multiple servers, we can run multiple VMs as the same time through the hypervisor to host multiple applications, the downside being, it causes OS replication which consumes resources the more applications we run.
+
+### Containers
+
+A need to optimize the usage of the available infrastructure led the way to virtualizing the OS. Prompting the actualization for **containers**, representing the bare minimum an application requires.
+
+Where we once had multiple VMs on a hypervisor, it's now replaced by multiple containers running on a single host operating system. Processes within the containers are completely isolated but are able to access the OS filesystem, resource and packages.
+
+## Docker for Application Packaging
+
