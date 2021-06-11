@@ -451,4 +451,88 @@ Explore Docker registries, alternatives to package an application, and OCI stand
 -   [Demystifying the Open Container Initiative (OCI) Specifications](https://www.docker.com/blog/demystifying-open-container-initiative-oci-specifications/)
 -   [Buildpacks: An App’s Brief Journey from Source to Image](https://buildpacks.io/docs/app-journey/)
 
-## Deploy Your First Kubernetes Cluster
+## Kubernetes - The Container Orchestrator Framework
+
+When deploying our containerized service, we must be aware that thousands and millions of users will be using it concurrently and as such we must build for scale. Managing this manually would be a nightmare, as it can be many containers that we'd need to keep up to date, check accessibility and health state which is why a container orchestrator framework comes in handy.
+
+Handling the creation, managing and configuration of thousands of containers through distributed servers and having them communicate with each other is the work of the container orchestrator framework. Multiple tools exist to provide this service such as Docker Swarm, Rancher, Apache Mesos, etc. Among these, Kubernetes swooped in and became an industry leader solutionizing **portability**, **scalability**, **resilience**, **service discovery**, **extensibility**, and **operational cost** of containers.
+
+### Solutions
+
+#### Portability
+
+Due to Kubernetes being open-source and vendor agnostic, it allows for high portability enabling it to be hosted on any infrastructure: public, private and hybrid cloud.
+
+#### Scalability
+
+Kubernetes has built-in resources like **HPA** (Horizontal Pod Autoscaler) to determined the required amount of replicas for a service. Scaling is the top-dog in moden infrastructure, which is why elasticity is a core feature highly automated within Kubernetes to enable an application to scale at use.
+
+#### Resilience
+
+Using functionalities like ReplicaSet, readiness, and liveness probes; Kubernetes enables self-healing to recover from failures fast while minimizing downtime.
+
+#### Service Discovery
+
+Providing a cluster level DNS (Domain Name System), simplifying access to the work within the cluster. Allowing Kubernetes to provide routing and load balancing to the requests the application needs to handle, adding the ability to automatically identify and access available services.
+
+#### Extensibility
+
+Using the building-block principle, it allows a set of basic resources to be easily adjusted. Providing an API that can be extended for new resources or CRDs (Custom Resource Definitions).
+
+#### Operational Cost
+
+Efficiency of resource consumption within a cluster like CPU and Memory. Providing a powerful scheduling mechanism that give an application on the node sufficient resources to execute with the given possibility to automatically scale the cluster size based on traffic done so by the cluster-autoscaler.
+
+### Kubernetes Architecture
+
+A cluster is composed of distributed physical and virtual servers called nodes, which are categorized as either master or worker nodes depending on the components installed on said nodes.
+
+#### Control Plane
+
+<div align="center>">
+	<img src="./assets/control_plane.png" max-width="700" />
+</div>
+
+Suite of master nodes that make global decisions for the cluster.
+
+**kube-apiserver**  
+Exposes the Kubernetes API, handling and triggering operations within the cluster
+
+**kube-scheduler**  
+Mechanism that provisions the resource requirements of workloads on a node
+
+**kube-controller-manager**  
+Handles controller processes and propogates the configuration to resources
+
+**etcd**  
+A key-value store for back-ups and manifests of the cluster
+
+#### Data Plane
+
+The compute used to host workloads.
+
+**kubelet**  
+Agent running on every node to notify the **kube-apiserver** the node is part of the cluster
+
+**kube-proxy**  
+Network proxy that ensures the workload on the node is accessible
+
+Components, **kubelet** and **kube-proxy** are installed on all cluster nodes (master / worker) to keep **kube-apiserver** up-to-date of all nodes within the cluster and are accessible.
+
+### Terms
+
+- **CRD** - Custom Resource Definition provides the ability to extend Kubernetes API and create new resources
+- **Node** - a physical or virtual server
+- **Cluster** - a collection of distributed nodes that are used to manage and host workloads
+- **Master Node** - a node from the Kubernetes control plane, that has installed components to make global, cluster-level decisions
+- **Worker Node** - a node from the Kubernetes data plane, that has installed components to host workloads
+
+### Additional Resources
+
+**[Kubernetes DNS for Services and Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)**  
+**[Kubernetes CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)**  
+**[Kubernete Cluster Autoscaler](https://kubernetes.io/blog/2016/07/autoscaling-in-kubernetes/)**  
+**[Kubernetes Architecture and Components](https://kubernetes.io/docs/concepts/overview/components/)**
+
+## Kubeconfig
+
