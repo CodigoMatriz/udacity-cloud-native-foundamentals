@@ -536,3 +536,68 @@ Components, **kubelet** and **kube-proxy** are installed on all cluster nodes (m
 
 ## Kubeconfig
 
+Contains the necessary cluster metadata and athentication details to query cluster objects. Usually stored under `~/.kube/config` directory but k3s stores it at `/etc/rancher/k3s/k3s.yaml`. If you'd like to custom set the location of the kubeconfig file, you may set it via the `--kubeconfig` flag with `kubectl` or via the `KUBECONFIG` environment variable.
+
+### Distinct Sections
+
+**Cluster**  
+Contains the metadata such as the name, API server endpoint and certificate authority (CA)
+
+**User**  
+Details for whomever wants access to the cluster, like the user's name and authentication metadata (username, password, token, certificates)
+
+**Context**  
+When a users credentials are valid and the cluster is up, the user is linked to the cluster granting access to its resources. Can be specified via `current-context`, instructing which context (cluster & user) can be used to query they cluster.
+
+### Example
+```
+apiVersion: v1
+# define the cluster metadata 
+clusters:
+- cluster:
+    certificate-authority-data: {{ CA }}
+    server: https://127.0.0.1:63668
+  name: udacity-cluster
+# define the user details 
+users:
+# `udacity-user` user authenticates using client and key certificates 
+- name: udacity-user
+  user:
+    client-certificate-data: {{ CERT }}
+    client-key-data: {{ KEY }}
+# `green-user` user authenticates using a token
+- name: green-user
+  user:
+    token: {{ TOKEN }}
+# define the contexts 
+contexts:
+- context:
+    cluster: udacity-cluster
+    user: udacity-user
+  name: udacity-context
+# set the current context
+current-context: udacity-context
+```
+
+### kubectl Commands
+
+```
+
+
+# Inspect  the endpoints for the cluster and installed add-ons 
+kubectl cluster-info
+
+# List all the nodes in the cluster. 
+# To get a more detailed view of the nodes, the `-o wide` flag can be passed
+kubectl get nodes [-o wide] 
+
+# Describe a cluster node.
+# Typical configuration: node IP, capacity (CPU and memory), a list of running pods on the node, podCIDR, etc.
+kubectl describe node {{ NODE NAME }}
+```
+
+### Additional Resources
+
+**[Cluster, This is Your Admin - Do you Read?](https://community.suse.com/posts/cluster-this-is-your-admin-do-you-read)**  
+**[Organizing Cluster Access Using kubeconfig Files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)**
+
