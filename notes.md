@@ -550,7 +550,8 @@ Details for whomever wants access to the cluster, like the user's name and authe
 When a users credentials are valid and the cluster is up, the user is linked to the cluster granting access to its resources. Can be specified via `current-context`, instructing which context (cluster & user) can be used to query they cluster.
 
 ### Example
-```
+
+```yaml
 apiVersion: v1
 # define the cluster metadata 
 clusters:
@@ -581,9 +582,7 @@ current-context: udacity-context
 
 ### kubectl Commands
 
-```
-
-
+```sh
 # Inspect  the endpoints for the cluster and installed add-ons 
 kubectl cluster-info
 
@@ -600,4 +599,101 @@ kubectl describe node {{ NODE NAME }}
 
 **[Cluster, This is Your Admin - Do you Read?](https://community.suse.com/posts/cluster-this-is-your-admin-do-you-read)**  
 **[Organizing Cluster Access Using kubeconfig Files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)**
+
+## Kubernetes Resources - Part 1
+
+Providing a rich collection of resources that are used to deploy, configure and manage an application.
+
+- **Pods** - the atomic element within a cluster to manage an application
+- **Deployments & ReplicaSets** - oversees a set of pods for the same application
+- **Services & Ingress** - ensures connectivity and reachability to pods
+- **Configmaps & Secrets** - pass configuration to pods
+- **Namespaces** - provides a logical separation between multiple applications and their resources
+- **Custom Resource Definition (CRD)** - extends Kubernetes API to support custom resources
+
+### Application Deployment
+
+The smallest manageable unit within a cluster that provides the execution environment for an application is called a **pod**. A container that executes an application from an OCI-compliant image is within a pod; **highly recommended to be a 1:1** relationship with pods and container at times there could be more than one. Pods are place on the cluster nodes, with a node being able to host multiple pods.
+
+<div align="center">
+	<img src="./assets/node_pod.png" max-width="700" />
+</div>
+#### Deployments and ReplicaSets
+
+<div align="center">
+	<img src="./assets/deployment_replicaset.png" max-width="700" />
+</div>
+
+A **Deployment** resource containing the specificication for the desired state of the application is necessary for application deployment unto the Kubernetes cluster. Through this resource we can also manage pods by a **ReplicaSet** resource that ensures the correct amount of replicas for the application are running.
+
+Running the command: `kubectl create deployment`
+
+```sh
+# create a Deployment resource
+# NAME - required; set the name of the deployment
+# IMAGE - required;  specify the Docker image to be executed
+# FLAGS - optional; provide extra configuration parameters for the resource
+# COMMAND and args - optional; instruct the container to run specific commands when it starts 
+kubectl create deploy NAME --image=image [FLAGS] -- [COMMAND] [args]
+
+# Some of the widely used FLAGS are:
+-r, --replicas - set the number of replicas
+-n, --namespace - set the namespace to run
+--port - expose the container port
+```
+
+**EXAMPLE**
+
+```sh
+# create a go-helloworld Deployment in namespace `test`
+kubectl create deploy go-helloworld --image=pixelpotato/go-helloworld:v1.0.0 -n test
+```
+
+Headless pods, though not recommended, are not managed by a ReplicaSet and Deployment but are useful when creating testing pods. 
+
+Running the command: `kubectl run`
+
+```sh
+# create a headless pod
+# NAME - required; set the name of the pod
+# IMAGE - required;  specify the Docker image to be executed
+# FLAGS - optional; provide extra configuration parameters for the resource
+# COMMAND and args - optional; instruct the container to run specific commands when it starts 
+kubectl run NAME --image=image [FLAGS] -- [COMMAND] [args...]
+
+# Some of the widely used FLAGS are:
+--restart - set the restart policy. Options [Always, OnFailure, Never]
+--dry-run - dry run the command. Options [none, client, server]
+-it - open an interactive shell to the container
+```
+
+**EXAMPLE**
+
+```sh
+# example: create a busybox pod, with an interactive shell and a restart policy set to Never 
+kubectl run -it busybox-test --image=busybox --restart=Never
+```
+
+#### Rolling Out Strategy
+
+Ensuring no downtime is encountered of a new application version release, the Deployment resource has two strategies:
+
+- **RollingUpdate** - updates the pods in a rolling out fashion (e.g. 1-by-1)
+- **Recreate** - kills all existing pods before new ones are created
+
+<div align="center">
+	<img src="./assets/rolling_out_strat.png" max-width="700" />
+</div>
+
+1. The Go hello-world application is running version v1.0.0 in a pod managed by a ReplicaSet
+2. The version of Go hello-world application is set to v2.0.0
+3. A new ReplicaSet is created that controls a new pod with the application running in version v2.0.0
+4. The traffic is directed to the pod running v2.0.0 and the pod with the old configuration (v1.0.0) is removed
+
+### Additional Resources
+
+**[Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/)**  
+**[Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)**  
+**[Kubernetes ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)**  
+**[Kubernetes RollingOut Strategies](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy)**
 
