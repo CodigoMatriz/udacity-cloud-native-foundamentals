@@ -697,3 +697,16 @@ Ensuring no downtime is encountered of a new application version release, the De
 **[Kubernetes ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)**  
 **[Kubernetes RollingOut Strategies](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy)**
 
+## Kubernetes Resources - Part 2
+
+One IP is allocated per pod ensuring connectivity and reachability to the application within the pod with is only routable inside the cluster, preventing external users and services to connect to the application.
+
+We can connect a workload within the cluster to access a pod directly but if the pod dies, all requests will fail as the application is not running. This is where a **Service** resource comes into play to automate a workload to communicate with a different pod.
+
+### Services
+
+An abstraction layer over a collection of pods running an application.
+
+<div align="center">
+	<img src="./assets/service.png" max-width="700" />
+</div>
