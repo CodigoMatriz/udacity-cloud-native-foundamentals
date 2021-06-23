@@ -705,8 +705,65 @@ We can connect a workload within the cluster to access a pod directly but if the
 
 ### Services
 
-An abstraction layer over a collection of pods running an application.
+> Service  
+> an abstraction layer over a collection of pods running an application
+
+An abstraction layer over a collection of pods running an application, which is allocated a cluster IP that transfer traffic to any avialable pods for an application.
 
 <div align="center">
 	<img src="./assets/service.png" max-width="700" />
 </div>
+
+As seen above, (1) the workload should access the (2) service IP which routes the request to (3) available pods.
+
+Three widely used Service types:
+
+**ClusterIP** exposes the service using a port exposed on all nodes in the cluster
+
+**NodePort** expoeses the service using a port exposed on all nodes in the cluster
+
+**LoadBalancer** exposes the service through a load balancer from a public cloud provider such as AWS, Azure or GCP. This will allow the external traffic to reach the services withint the cluster securely.
+
+Running the command: `kubectl expose deployment`
+
+```sh
+# expose a Deployment through a Service resource 
+# NAME - required; set the name of the deployment to be exposed
+# --port - required; specify the port that the service should serve on
+# --target-port - optional; specify the port on the container that the service should direct traffic to
+# FLAGS - optional; provide extra configuration parameters for the service
+kubectl expose deploy NAME --port=port [--target-port=port] [FLAGS]
+
+# Some of the widely used FLAGS are:
+--protocol - set the network protocol. Options [TCP|UDP|SCTP]
+--type - set the type of service. Options [ClusterIP, NodePort, LoadBalancer]
+```
+
+**EXAMPLE**
+
+```sh
+# expose the `go-helloworld` deployment on port 8111
+# note: the application is serving requests on port 6112
+kubectl expose deploy go-helloworld --port=8111 --target-port=6112
+```
+
+### Ingress
+
+> Ingress  
+> a mechanism to manage the access from external users and workloads to the services within the cluster
+
+A resource necessary to allow an external user to access services within the cluster. Exposing HTTP and HTTPS routes to services witin the cluster via a load balancer provisioned by a cloud provider. Using a set of rules, HTTP(S) endpoints can be mapped to services in the cluster, and an **Ingress Controller** is used to keep the rules and load balancer up-to-date.
+
+<div align="center">
+	<img src="./assets/ingress.png" max-width="700" />
+</div>
+
+Shown in the image above, the customers will access the *go-helloworld.com/hi* HTTP route (1), which is managed by an Ingress (2). The Ingress  Controller (3) examines the configured routes and directs the traffic to a LoadBalancer (4). And finally, the LoadBalancer directs the requests  to the pods using a dedicated port (5). 
+
+### Additional Resources
+
+**[Kubernetes Services](https://kubernetes.io/docs/concepts/services-networking/service/)**
+**[Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)**
+
+## Kubernetes Resources - Part 3
+
