@@ -767,3 +767,83 @@ Shown in the image above, the customers will access the *go-helloworld.com/hi* H
 
 ## Kubernetes Resources - Part 3
 
+### Application Configuration and Context
+
+Good development practice is to separate the configuration from the source code, increasing the portability of an application as it becomes resilient to customer use cases. Kubernetes offers us two resources to pass data to an application: **ConfigMaps** and **Secrets**
+
+#### ConfigMaps
+
+Stores non-confidential data in key-value pairs, allowing a pod to consume the Configmap as an environment variable, configuration values via a volume mount or as a CLI argument to the container.
+
+Running the command: `kubectl create configmap`
+
+```sh
+# create a Configmap
+# NAME - required; set the name of the configmap resource
+# FLAGS - optional; define  extra configuration parameters for the configmap
+kubectl create configmap NAME [FLAGS]
+
+# Some of the widely used FLAGS are:
+--from-file - set path to file with key-value pairs 
+--from-literal - set key-value pair from command-line 
+```
+
+**EXAMPLE**
+
+```sh
+# create a Configmap to store the color value
+kubectl create configmap test-cm --from-literal=color=yellow
+```
+
+#### Secrets
+
+Stores and distributes sensitive data to the pods. Like ConfigMaps, Secrets can be consumed via environment variables or files via a volume mount. All secrets will be encoded in base64.
+
+Running command: `kubectl create secret generic`
+
+```sh
+# create a Secret
+# NAME - required; set the name of the secret resource
+# FLAGS - optional; define  extra configuration parameters for the secret
+kubectl create secret generic NAME [FLAGS]
+
+# Some of the widely used FLAGS are:
+--from-file - set path to file with the sensitive key-value pairs 
+--from-literal - set key-value pair from command-line 
+```
+
+**EXAMPLE**
+
+```sh
+# create a Secret to store the secret color value
+kubectl create secret generic test-secret --from-literal=color=blue
+```
+
+#### Namespaces
+
+Via this resource, we can separate multiple applications and associated resources to allow separate execution environments across teams and business verticals. Provides the application context, which defines the environment for a group of Kubernets resources that relate to a project, like the amount of CPU, memory and access. This separation eliminates the use case where a team can consume all the available resources in the cluster if Namespace no boundaries are set.
+
+Running the command: `kubectl create namespace`
+
+```sh
+# create a Namespace
+# NAME - required; set the name of the Namespace
+kubectl create ns NAME
+```
+
+**EXAMPLE**
+
+```sh
+# create a `test-udacity` Namespace
+kubectl create ns test-udacity
+
+# get all the pods in the `test-udacity` Namespace
+kubectl get po -n test-udacity
+```
+
+### Additional Resources
+
+**[Kubernetes Configmap](https://kubernetes.io/docs/concepts/configuration/configmap/)**
+**[Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)**
+**[Kubernetes Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)**
+
