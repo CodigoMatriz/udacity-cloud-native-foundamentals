@@ -1080,3 +1080,14 @@ kubectl create RESOURCE [REQUIRED FLAGS] --dry-run=client -o yaml
 
 # Lesson 4: Open Source PaaS
 
+Throughout the release process, the development team has to collaborate closely with the infrastructure team. This is necessary to ensure that the application requirements can be fulfilled by the platform capabilities. However, this is a use case where an organization has enough resources to hire a development and infrastructure team. Small organizations, consists of small teams that focus fully on application development. In these circumstances, it is only a natural movement to delegate the management of platform components to a 3rd party.
+
+## Cluster Management
+
+Managing Kubernetes at scale is challenging, especially when clusters are self-hosted in datacenters or private clouds. With this scenario a dedicated team has to keep up with Kubernetes releases to ensure the platform is update, upgraded, managed and configured to meet production-grade standards.
+
+Within any organization, a release process consists of releasing the application to multiple environments, such as sandbox, staging, and production. In this case, each environment is represented by a separate Kubernetes cluster, with a total of 3 clusters. However, the number of clusters grows exponentially if the platform is replicated across different regions. This is usually required to keep market proximity and deliver a service to consumers with minimal latency. As a result, if the infrastructure is distributed across the US, Europe, and the Asia Pacific, a team ends up operating 9 clusters. Configuring, managing, upgrading, updating, and deploying to all of these clusters is a herculean task and often requires a dedicated team.
+
+If an organization does not have sufficient engineering resources, delegating the platform management to a third-party provider is a more suitable solutionl PaaS or Platform as a Service solution.
+
+## PaaS Mechanisms
