@@ -847,3 +847,236 @@ kubectl get po -n test-udacity
 **[Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)**
 **[Kubernetes Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)**
 
+## `kubectl` Commands
+
+### Create Resources
+
+To create resources, use the following command:
+
+```yaml
+kubectl create RESOURCE NAME [FLAGS]
+```
+
+### Describe Resources
+
+To describe resources, use the following command:
+
+```yaml
+kubectl describe RESOURCE NAME 
+```
+
+### Get Resources
+
+To get resources, use the following command, where `-o yaml` instructs that the result should be YAML formated. 
+
+```yaml
+kubectl get RESOURCE NAME [-o yaml]
+```
+
+### Edit Resources
+
+To edit resources, use the following command, where `-o yaml` instructs that the edit should be YAML formated. 
+
+```yaml
+kubectl edit RESOURCE NAME [-o yaml]
+```
+
+### Label Resources
+
+To label resources, use the following command:
+
+```yaml
+kubectl label RESOURCE NAME [PARAMS]
+```
+
+### Port-forward to Resources
+
+To access resources through port-forward, use the following command:
+
+```yaml
+kubectl port-forward RESOURCE/NAME [PARAMS]
+```
+
+### Logs from Resources
+
+To access logs from a resource, use the following command:
+
+```yaml
+kubectl logs RESOURCE/NAME [FLAGS]
+```
+
+### Delete Resources
+
+To delete resources, use the following command:
+
+```yaml
+kubectl delete RESOURCE NAME
+```
+
+## Declarative Kubernetes Manifests
+
+### Imperative Management Technique
+Uses the `kubectl` command directly on the live cluster. Best suited for development stages only, presenting a low entry-level bar to interact with the cluster.
+
+### Declarative Management Technique
+Uses locally stored manifests to create and manage Kubernetes objects. Best recommended for production releases to version control the state of deployed resources. High learning curve as it requires understanding the YAML manifest structure which also gives way to configuring advanced options like volume mounts, readiness and liveness probes and so on.
+
+### YAML Manifest Structure
+
+There are four obligatory sections:
+
+-   **apiversion** - API version used to create a Kubernetes object
+-   **kind** - object type to be created or configured 
+-   **metadata** - stores data that makes the object identifiable, such as its name, namespace, and labels
+-   **spec** - defines the desired configuration state of the resource
+
+We can get the YAML manifest of any resource by running `kubectl get` command with the `-o yaml` flag.
+
+### Example: Deployment YAML Manifest
+
+```yaml
+## Set the API endpoint used to create the Deployment resource.
+apiVersion: apps/v1
+## Define the type of the resource.
+kind: Deployment
+## Set the parameters that make the object identifiable, such as its name, namespace, and labels.
+metadata:
+  annotations:
+  labels:
+    app: go-helloworld
+  name: go-helloworld
+  namespace: default
+## Define the desired configuration for the Deployment resource.
+spec:
+  ## Set the number of replicas.
+  ## This will create a ReplicaSet that will manage 3 pods of the Go hello-world application.
+  replicas: 3
+  ## Identify the pods managed by this Deployment using the following selectors.
+  ## In this case, all pods with the label `go-helloworld`.
+  selector:
+    matchLabels:
+      app: go-helloworld
+  ## Set the RollingOut strategy for the Deployment.
+  ## For example, roll out only 25% of the new pods at a time.
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  ## Set the configuration for the pods.
+  template:
+    ## Define the identifiable metadata for the pods.
+    ## For example, all pods should have the label `go-helloworld`
+    metadata:
+      labels:
+        app: go-helloworld
+    ## Define the desired state of the pod configuration.
+    spec:
+      containers:
+        ## Set the image to be executed inside the container and image pull policy
+        ## In this case, run the `go-helloworld` application in version v2.0.0 and
+        ## only pull the image if it's not available on the current host.
+      - image: pixelpotato/go-helloworld:v2.0.0
+        imagePullPolicy: IfNotPresent
+        name: go-helloworld
+        ## Expose the port the container is listening on.
+        ## For example, exposing the application port 6112 via TCP.
+        ports:
+        - containerPort: 6112
+          protocol: TCP
+        ## Define the rules for the liveness probes.
+        ## For example, verify the application on the main route `/`,
+        ## on application port 6112. If the application is not responsive, then the pod will be restarted automatically. 
+        livenessProbe:
+           httpGet:
+             path: /
+             port: 6112
+        ## Define the rules for the readiness probes.
+        ## For example, verify the application on the main route `/`,
+        ## on application port 6112. If the application is responsive, then traffic will be sent to this pod.
+        readinessProbe:
+           httpGet:
+             path: /
+             port: 6112
+        ## Set the resource requests and limits for an application.
+        resources:
+        ## The resource requests guarantees that the desired amount 
+        ## CPU and memory is allocated for a pod. In this example, 
+        ## the pod will be allocated with 64 Mebibytes and 250 miliCPUs.
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+        ## The resource limits ensure that the application is not consuming 
+        ## more than the specified CPU and memory values. In this example, 
+        ## the pod will not surpass 128 Mebibytes and 500 miliCPUs.
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+```
+
+### Example: Service YAML Manifest
+
+```yaml
+## Set the API endpoint used to create the Service resource.
+apiVersion: v1
+## Define the type of the resource.
+kind: Service
+## Set the parameters that make the object identifiable, such as its name, namespace, and labels.
+metadata:
+  labels:
+    app: go-helloworld
+  name: go-helloworld
+  namespace: default
+## Define the desired configuration for the Service resource.
+spec:
+  ## Define the ports that the service should serve on. 
+  ## For example, the service is exposed on port 8111, and
+  ## directs the traffic to the pods on port 6112, using TCP.
+  ports:
+  - port: 8111
+    protocol: TCP
+    targetPort: 6112
+  ## Identify the pods managed by this Service using the following selectors.
+  ## In this case, all pods with the label `go-helloworld`.
+  selector:
+    app: go-helloworld
+  ## Define the Service type, here set to ClusterIP.
+  type: ClusterIP
+```
+
+### Useful Commands
+
+Kubernetes YAML manifests can be created using the `kubectl apply` command, with the following syntax:
+
+```bash
+# create a resource defined in the YAML manifests with the name manifest.yaml
+kubectl apply -f manifest.yaml
+```
+
+To delete a resource using a YAML manifest, the `kubectl delete` command, with the following syntax:
+
+```bash
+# delete a resource defined in the YAML manifests with the name manifest.yaml
+kubectl delete -f manifest.yaml
+```
+
+```bash
+# get YAML template for a resource 
+kubectl create RESOURCE [REQUIRED FLAGS] --dry-run=client -o yaml
+```
+
+**Example**
+```bash
+# get the base YAML templated for a demo Deployment running a nxing application
+ kubectl create deploy demo --image=nginx --dry-run=client -o yaml
+```
+
+### Additional Resources
+
+-   [Managing Kubernetes Objects Using Imperative Commands](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-command/)
+-   [Declarative Management of Kubernetes Objects Using Configuration Files](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/)
+-   [Configure Liveness, Readiness Probes for a Deployment](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+-   [Managing Resources for Containers](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+
+# Lesson 4: Open Source PaaS
+
